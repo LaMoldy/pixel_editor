@@ -5,7 +5,7 @@ from tkinter import ttk
 class ComponentFactory:
 
     @staticmethod
-    def create_window(title: str, dimensions: tuple[int, int], bg: str, resizable: bool) -> Tk:
+    def create_window(title: str, bg: str, resizable: bool, dimensions: tuple[int, int] = None) -> Tk:
         """
         Creates a new window
 
@@ -20,7 +20,8 @@ class ComponentFactory:
         """
         window = Tk()
         window.title(title)
-        window.geometry(f"{dimensions[0]}x{dimensions[1]}")
+        if dimensions is not None:
+            window.geometry(f"{dimensions[0]}x{dimensions[1]}")
         window.configure(bg=bg)
         window.resizable(resizable, resizable)
         return window
@@ -48,7 +49,18 @@ class ComponentFactory:
 
     @staticmethod
     def create_canvas(window: Tk, res: tuple[int, int]):
+        """
+                Creates a Canvas object
 
+                Args:
+                    res (tuple): the resolution
+
+
+                Returns:
+                    Canvas: A new Canvas
+
+
+                """
         canvas = Canvas(window,
                         bg="#FFFFFF",
                         height=res[0],
