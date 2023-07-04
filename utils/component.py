@@ -1,11 +1,10 @@
-import tkinter as tk
-from tkinter import ttk
+from tkinter import *
 
 
 class ComponentFactory:
 
     @staticmethod
-    def create_window(title: str, dimensions: tuple[int, int], bg: str, resizable: bool) -> tk.Tk:
+    def create_window(title: str, dimensions: tuple[int, int], bg: str, resizable: bool) -> Tk:
         """
         Creates a new window
 
@@ -18,7 +17,7 @@ class ComponentFactory:
         Returns:
             Tk: A new window
         """
-        window = tk.Tk()
+        window = Tk()
         window.title(title)
         window.geometry(f"{dimensions[0]}x{dimensions[1]}")
         window.configure(bg=bg)
@@ -26,7 +25,7 @@ class ComponentFactory:
         return window
 
     @staticmethod
-    def create_button(window: tk.Tk, text: str) -> ttk.Button:
+    def create_button(window: Tk, text: str) -> Button:
         """
         Creates a new button
 
@@ -37,7 +36,7 @@ class ComponentFactory:
         Returns:
             Button: A new Button
         """
-        button = ttk.Button(
+        button = Button(
             window,
             text=text,
         )
