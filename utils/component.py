@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 
-class ComponentFactory():
+
+class ComponentFactory:
 
     @staticmethod
     def create_window(title: str, dimensions: tuple[int, int], bg: str, resizable: bool) -> tk.Tk:
@@ -10,7 +11,7 @@ class ComponentFactory():
 
         Args:
             title (str): Window title
-            dimension (tuple): Dimensions of the window
+            dimensions (tuple): Dimensions of the window
             bg (str): Window background colour
             resizable (bool): Window resizing ability
 

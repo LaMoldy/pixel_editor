@@ -10,5 +10,4 @@ window = ComponentFactory.create_window(window_title, window_dimensions, window_
 # Place Components here
 button = ComponentFactory.create_button(window, "Hello")
 
-
 window.mainloop()
