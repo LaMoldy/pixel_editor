@@ -40,4 +40,5 @@ class ComponentFactory():
             window,
             text=text,
         )
+        button.pack()
         return button
