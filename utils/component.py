@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import ttk
 
 
 class ComponentFactory:
@@ -25,20 +26,32 @@ class ComponentFactory:
         return window
 
     @staticmethod
-    def create_button(window: Tk, text: str) -> Button:
+    def create_button(window: Tk, text: str = None, command: any = None) -> ttk.Button:
         """
         Creates a new button
 
         Args:
             window (tk.Tk): The window
             text (str): The buttons text
+            command (any): The command
 
         Returns:
             Button: A new Button
+
         """
-        button = Button(
+        button = ttk.Button(
             window,
             text=text,
+            command=command
         )
-        button.pack()
         return button
+
+    @staticmethod
+    def create_canvas(window: Tk, res: tuple[int, int]):
+
+        canvas = Canvas(window,
+                        bg="#FFFFFF",
+                        height=res[0],
+                        width=res[1])
+
+        return canvas
