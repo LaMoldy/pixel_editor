@@ -68,7 +68,7 @@ class App:
             height = canvas.winfo_height()
 
             # Capture a screenshot of the canvas
-            screenshot = ImageGrab.grab((x, y, x + width - 230, y + height))
+            screenshot = ImageGrab.grab((x, y, x + width, y + height))
 
             # Ask user for the save location and filename
             filename = filedialog.asksaveasfilename(defaultextension=".png",
