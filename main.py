@@ -19,6 +19,7 @@ class App:
         """
         self.window = ComponentFactory.create_window(title, bg_color, resizable)
         self.selected_colour = "black"
+        self.cached_actions = []
         self.load_components()
         self.window.mainloop()
 
@@ -28,24 +29,43 @@ class App:
         """
         resolution = (900, 900)
         pixel_size = 14.0625
-
+        current_action = []
+        action_length = []
         canvas = ComponentFactory.create_canvas(self.window, resolution)
         canvas.pack()
 
         def draw_pixel(event):
             x = event.x // pixel_size
             y = event.y // pixel_size
-            canvas.create_rectangle(x * pixel_size, y * pixel_size, (x + 1) * pixel_size, (y + 1) * pixel_size,
-                                    fill=self.selected_colour, outline=self.selected_colour)
+            rect = canvas.create_rectangle(x * pixel_size, y * pixel_size, (x + 1) * pixel_size, (y + 1) * pixel_size,
+                                           fill=self.selected_colour, outline=self.selected_colour)
+            current_action.append(rect)
+
 
         def erase_pixel(event):
             x = event.x // pixel_size
             y = event.y // pixel_size
-            rect = canvas.create_rectangle(x * pixel_size, y * pixel_size, (x + 1) * pixel_size, (y + 1) * pixel_size,
-                                           outline="white", fill="white")
+            canvas.create_rectangle(x * pixel_size, y * pixel_size, (x + 1) * pixel_size, (y + 1) * pixel_size,
+                                    outline="white", fill="white")
+
+        def on_draw_finish(e):
+            self.cached_actions.extend(current_action)
+            action_length.append(len(current_action))
+            current_action.clear()
+
+        def undo(e):
+            last_action_length = action_length[-1]
+            action_start = len(self.cached_actions) - last_action_length
+            action_end = len(self.cached_actions)
+            for action in self.cached_actions[action_start:action_end]:
+                canvas.delete(action)
+                self.cached_actions.remove(action)
+            action_length.remove(last_action_length)
 
         canvas.bind("<B1-Motion>", draw_pixel)
+        self.window.bind("<ButtonRelease-1>", on_draw_finish)
         canvas.bind("<B3-Motion>", erase_pixel)
+        self.window.bind("<Control-z>", undo)
 
         def clear_canvas():
             canvas.delete("all")
