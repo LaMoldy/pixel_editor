@@ -5,7 +5,7 @@ from tkinter import ttk
 class ComponentFactory:
 
     @staticmethod
-    def create_window(title: str, bg: str, resizable: bool, dimensions: tuple[int, int] = None) -> Tk:
+    def create_window(title: str, bg: str, resizable: tuple[bool, bool] | bool, dimensions: tuple[int, int] = None) -> Tk:
         """
         Creates a new window
 
@@ -13,7 +13,7 @@ class ComponentFactory:
             title (str): Window title
             dimensions (tuple): Dimensions of the window
             bg (str): Window background colour
-            resizable (bool): Window resizing ability
+            resizable (tuple): Window resizing ability
 
         Returns:
             Tk: A new window
@@ -24,6 +24,7 @@ class ComponentFactory:
             window.geometry(f"{dimensions[0]}x{dimensions[1]}")
         window.configure(bg=bg)
         window.resizable(resizable, resizable)
+
         return window
 
     @staticmethod
@@ -43,7 +44,8 @@ class ComponentFactory:
         button = ttk.Button(
             window,
             text=text,
-            command=command
+            command=command,
+            padding=1
         )
         return button
 
@@ -54,16 +56,19 @@ class ComponentFactory:
 
                 Args:
                     res (tuple): the resolution
+                    window: the parent window
 
 
                 Returns:
                     Canvas: A new Canvas
 
 
+
                 """
         canvas = Canvas(window,
-                        bg="#FFFFFF",
                         height=res[0],
-                        width=res[1])
+                        width=res[1],
+                        )
 
         return canvas
+
