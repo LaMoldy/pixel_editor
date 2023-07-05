@@ -83,12 +83,13 @@ class App:
 
         def open_image():
             file = filedialog.askopenfile(defaultextension=".png", filetypes=[("PNG Image", "*.png")])
-            image = (Image.open(file.name))
-            resized_image = image.resize(resolution, Image.LANCZOS)
-            new_image = ImageTk.PhotoImage(resized_image)
-            self.image = new_image
-            clear_canvas()
-            canvas.create_image((450, 450), image=self.image)
+            if file:
+                image = (Image.open(file.name))
+                resized_image = image.resize(resolution, Image.LANCZOS)
+                new_image = ImageTk.PhotoImage(resized_image)
+                self.image = new_image
+                clear_canvas()
+                canvas.create_image((450, 450), image=self.image)
 
         open_image_button = ComponentFactory.create_button(self.window, text="Open Image", command=open_image)
         open_image_button.pack()
