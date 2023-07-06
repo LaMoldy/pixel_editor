@@ -35,17 +35,18 @@ class Canvas_Manager:
         rect = self.canvas.create_rectangle(x * self.pixel_size, y * self.pixel_size, (x + 1) * self.pixel_size,
                                             (y + 1) * self.pixel_size,
                                             fill=self.selected_colour, outline=self.selected_colour)
-        self.current_action.append(rect)
+        self.current_action.append((rect, (x, y)))
 
     def erase_pixel(self, event):
-        """Creates a white pixel"""
+        """Checks if a pixel exists where the mouse is and deletes it."""
 
         x = event.x // self.pixel_size
         y = event.y // self.pixel_size
-        rect = self.canvas.create_rectangle(x * self.pixel_size, y * self.pixel_size, (x + 1) * self.pixel_size,
-                                            (y + 1) * self.pixel_size,
-                                            outline="white", fill="white")
-        self.current_action.append(rect)
+
+        for action in self.cached_actions:
+            coords = action[1]
+            if coords[0] == x and coords[1] == y:
+                self.canvas.delete(action[0])
 
     def on_draw_finish(self, _):
         """Called when drawing finishes. Adds the actions to cached_actions list."""
@@ -60,7 +61,8 @@ class Canvas_Manager:
             action_start = len(self.cached_actions) - last_action_length
             action_end = len(self.cached_actions)
             for action in self.cached_actions[action_start:action_end]:
-                self.canvas.delete(action)
+                print(action)
+                self.canvas.delete(action[0])
                 self.cached_actions.remove(action)
             self.action_length.remove(last_action_length)
         except IndexError:
