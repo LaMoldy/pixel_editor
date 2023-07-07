@@ -3,6 +3,9 @@ from tkinter import *
 
 from PIL import ImageGrab, Image, ImageTk
 
+from utils.action_create import Action_Create
+from utils.action_delete import Action_Delete
+
 
 class Canvas_Manager:
 
@@ -11,14 +14,12 @@ class Canvas_Manager:
         self.selected_colour = "black"
         self.pixel_size = 14.0625
         self.resolution = (900, 900)
-        self.cached_actions = []
-        self.current_action = []
-        self.action_length = []
         canvas.bind("<B1-Motion>", self.draw_pixel)
         canvas.master.bind("<ButtonRelease-1>", self.on_draw_finish)
-        canvas.master.bind("<ButtonRelease-3>", self.on_draw_finish)
+        canvas.master.bind("<ButtonRelease-3>", self.on_erase_finish)
         canvas.bind("<B3-Motion>", self.erase_pixel)
         canvas.master.bind("<Control-z>", self.undo)
+        canvas.master.bind("<Alt-z>", self.redo)
 
     def draw_pixel(self, event):
         """
@@ -32,10 +33,16 @@ class Canvas_Manager:
 
         x = event.x // self.pixel_size
         y = event.y // self.pixel_size
+        coords = (x, y)
         rect = self.canvas.create_rectangle(x * self.pixel_size, y * self.pixel_size, (x + 1) * self.pixel_size,
                                             (y + 1) * self.pixel_size,
                                             fill=self.selected_colour, outline=self.selected_colour)
-        self.current_action.append((rect, (x, y)))
+        Action_Create(self.canvas, rect, coords, self.pixel_size, self.selected_colour)
+
+    @staticmethod
+    def on_draw_finish(_):
+        """Called when drawing finishes. Adds the actions to cached_actions list."""
+        Action_Create.update_cache()
 
     def erase_pixel(self, event):
         """Checks if a pixel exists where the mouse is and deletes it."""
@@ -43,28 +50,35 @@ class Canvas_Manager:
         x = event.x // self.pixel_size
         y = event.y // self.pixel_size
 
-        for action in self.cached_actions:
-            coords = action[1]
-            if coords[0] == x and coords[1] == y:
-                self.canvas.delete(action[0])
+        for action_create in Action_Create.cached_action_creates:
+            for action in action_create:
+                coords = action.coords
+                if coords[0] == x and coords[1] == y:
+                    action.undo()
 
-    def on_draw_finish(self, _):
-        """Called when drawing finishes. Adds the actions to cached_actions list."""
-        self.cached_actions.extend(self.current_action)
-        self.action_length.append(len(self.current_action))
-        self.current_action.clear()
+    @staticmethod
+    def on_erase_finish(_):
+        Action_Delete.update_cache()
 
-    def undo(self, _):
+    @staticmethod
+    def undo(_):
         """Undoes the last action the user did."""
         try:
-            last_action_length = self.action_length[-1]
-            action_start = len(self.cached_actions) - last_action_length
-            action_end = len(self.cached_actions)
-            for action in self.cached_actions[action_start:action_end]:
-                print(action)
-                self.canvas.delete(action[0])
-                self.cached_actions.remove(action)
-            self.action_length.remove(last_action_length)
+            for action in Action_Create.cached_action_creates[-1]:
+                action.undo()
+            Action_Delete.update_cache()
+            Action_Create.cached_action_creates.remove(Action_Create.cached_action_creates[-1])
+        except IndexError:
+            print("No more actions to revert.")
+
+    @staticmethod
+    def redo(_):
+        """Redoes the last action the user did."""
+        try:
+            for action in Action_Delete.cached_action_delete[-1]:
+                action.undo()
+            Action_Create.update_cache()
+            Action_Delete.cached_action_delete.remove(Action_Delete.cached_action_delete[-1])
         except IndexError:
             print("No more actions to revert.")
 
