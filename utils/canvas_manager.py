@@ -11,9 +11,6 @@ class Canvas_Manager:
         self.selected_colour = "black"
         self.pixel_size = 14.0625
         self.resolution = (900, 900)
-        self.cached_actions = []
-        self.current_action = []
-        self.action_length = []
         canvas.bind("<B1-Motion>", self.draw_pixel)
         canvas.master.bind("<ButtonRelease-1>", self.on_draw_finish)
         canvas.master.bind("<ButtonRelease-3>", self.on_draw_finish)
