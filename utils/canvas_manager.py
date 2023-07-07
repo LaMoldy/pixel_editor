@@ -3,6 +3,9 @@ from tkinter import *
 
 from PIL import ImageGrab, Image, ImageTk
 
+from utils.action_create import Action_Create
+from utils.action_delete import Action_Delete
+
 
 class Canvas_Manager:
 
