@@ -33,10 +33,12 @@ class Canvas_Manager:
 
         x = event.x // self.pixel_size
         y = event.y // self.pixel_size
+        coords = (x, y)
         rect = self.canvas.create_rectangle(x * self.pixel_size, y * self.pixel_size, (x + 1) * self.pixel_size,
                                             (y + 1) * self.pixel_size,
                                             fill=self.selected_colour, outline=self.selected_colour)
-        self.current_action.append((rect, (x, y)))
+        Action_Create(self.canvas, rect, coords, self.pixel_size, self.selected_colour)
+
     @staticmethod
     def on_draw_finish(_):
         """Called when drawing finishes. Adds the actions to cached_actions list."""
