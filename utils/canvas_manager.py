@@ -50,27 +50,27 @@ class Canvas_Manager:
         x = event.x // self.pixel_size
         y = event.y // self.pixel_size
 
-        for action in self.cached_actions:
-            coords = action[1]
-            if coords[0] == x and coords[1] == y:
-                self.canvas.delete(action[0])
+        for action_create in Action_Create.cached_action_creates:
+            for action in action_create:
+                coords = action.coords
+                if coords[0] == x and coords[1] == y:
+                    action.undo()
 
-    def on_draw_finish(self, _):
-        """Called when drawing finishes. Adds the actions to cached_actions list."""
-        self.cached_actions.extend(self.current_action)
-        self.action_length.append(len(self.current_action))
-        self.current_action.clear()
+    @staticmethod
+    def on_erase_finish(_):
+        Action_Delete.update_cache()
 
-    def undo(self, _):
+    @staticmethod
+    def undo(_):
         """Undoes the last action the user did."""
         try:
-            last_action_length = self.action_length[-1]
-            action_start = len(self.cached_actions) - last_action_length
-            action_end = len(self.cached_actions)
-            for action in self.cached_actions[action_start:action_end]:
-                print(action)
-                self.canvas.delete(action[0])
-                self.cached_actions.remove(action)
+            for action in Action_Create.cached_action_creates[-1]:
+                action.undo()
+            Action_Delete.update_cache()
+            Action_Create.cached_action_creates.remove(Action_Create.cached_action_creates[-1])
+        except IndexError:
+            print("No more actions to revert.")
+
     @staticmethod
     def redo(_):
         """Redoes the last action the user did."""
