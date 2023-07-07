@@ -16,9 +16,10 @@ class Canvas_Manager:
         self.resolution = (900, 900)
         canvas.bind("<B1-Motion>", self.draw_pixel)
         canvas.master.bind("<ButtonRelease-1>", self.on_draw_finish)
-        canvas.master.bind("<ButtonRelease-3>", self.on_draw_finish)
+        canvas.master.bind("<ButtonRelease-3>", self.on_erase_finish)
         canvas.bind("<B3-Motion>", self.erase_pixel)
         canvas.master.bind("<Control-z>", self.undo)
+        canvas.master.bind("<Alt-z>", self.redo)
 
     def draw_pixel(self, event):
         """
@@ -36,6 +37,10 @@ class Canvas_Manager:
                                             (y + 1) * self.pixel_size,
                                             fill=self.selected_colour, outline=self.selected_colour)
         self.current_action.append((rect, (x, y)))
+    @staticmethod
+    def on_draw_finish(_):
+        """Called when drawing finishes. Adds the actions to cached_actions list."""
+        Action_Create.update_cache()
 
     def erase_pixel(self, event):
         """Checks if a pixel exists where the mouse is and deletes it."""
@@ -64,7 +69,14 @@ class Canvas_Manager:
                 print(action)
                 self.canvas.delete(action[0])
                 self.cached_actions.remove(action)
-            self.action_length.remove(last_action_length)
+    @staticmethod
+    def redo(_):
+        """Redoes the last action the user did."""
+        try:
+            for action in Action_Delete.cached_action_delete[-1]:
+                action.undo()
+            Action_Create.update_cache()
+            Action_Delete.cached_action_delete.remove(Action_Delete.cached_action_delete[-1])
         except IndexError:
             print("No more actions to revert.")
 
