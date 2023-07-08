@@ -32,11 +32,9 @@ class App:
         clear_button = ComponentFactory.create_button(self.window, "Clear", command=canvas_object.clear)
         clear_button.pack()
 
-        change_color_button = ComponentFactory.create_button(self.window, "Change Colour", command=canvas_object.change_colour)
+        change_color_button = ComponentFactory.create_button(self.window, "Change Colour",
+                                                             command=canvas_object.change_colour)
         change_color_button.pack()
-
-        save_button = ComponentFactory.create_button(self.window, text="Save Image", command=canvas_object.save_image)
-        save_button.pack()
 
         open_image_button = ComponentFactory.create_button(self.window, text="Open Image",
                                                            command=canvas_object.open_image)

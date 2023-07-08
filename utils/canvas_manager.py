@@ -20,6 +20,7 @@ class Canvas_Manager:
         canvas.bind("<B3-Motion>", self.erase_pixel)
         canvas.master.bind("<Control-z>", self.undo)
         canvas.master.bind("<Alt-z>", self.redo)
+        canvas.master.bind("<Control-s>", self.save_image)
 
     def draw_pixel(self, event):
         """
@@ -82,7 +83,7 @@ class Canvas_Manager:
         except IndexError:
             print("No more actions to revert.")
 
-    def save_image(self):
+    def save_image(self, _):
         """Saves the image on the canvas via ImageGrab"""
         # Get the dimensions of the canvas
         x = self.canvas.winfo_rootx()
